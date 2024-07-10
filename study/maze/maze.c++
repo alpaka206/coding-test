@@ -13,27 +13,29 @@ int dy[4] = { -1, 1, 0, 0 };
 int dx[4] = { 0, 0, -1, 1 };
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
     int N;
     cin >> N;
 
     vector<vector<char>> maze(N, vector<char>(N));
-    Point start, end, A, a, B, b;
-
+    Point start, end;
+    unordered_map<char, Point> wormholes;
+    
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             cin >> maze[i][j];
             if (maze[i][j] == 'S') start = { i, j, 1 };
             if (maze[i][j] == 'E') end = { i, j, 0 };
-            if (maze[i][j] == 'A') A = { i, j, 0 };
-            if (maze[i][j] == 'a') a = { i, j, 0 };
-            if (maze[i][j] == 'B') B = { i, j, 0 };
-            if (maze[i][j] == 'b') b = { i, j, 0 };
+            if (maze[i][j] == 'A' || maze[i][j] == 'a' || maze[i][j] == 'B' || maze[i][j] == 'b') {
+                wormholes[maze[i][j]] = { i, j, 0 };
+            }
         }
     }
 
     queue<Point> q;
     vector<vector<bool>> visited(N, vector<bool>(N, false));
-    unordered_map<char, Point> wormhole = { {'A', a}, {'B', b} };
 
     q.push(start);
     visited[start.y][start.x] = true;
@@ -50,7 +52,9 @@ int main() {
 
         // 웜홀에 도착하면 무조건 웜홀을 통해 이동
         if (maze[current.y][current.x] == 'A' || maze[current.y][current.x] == 'B') {
-            Point target = wormhole[maze[current.y][current.x]];
+            char portal = maze[current.y][current.x];
+            char correspondingPortal = portal == 'A' ? 'a' : 'b';
+            Point target = wormholes[correspondingPortal];
             if (!visited[target.y][target.x]) {
                 visited[target.y][target.x] = true;
                 q.push({ target.y, target.x, current.dist + 1 });
