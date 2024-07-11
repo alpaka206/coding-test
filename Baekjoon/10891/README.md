@@ -1,4 +1,4 @@
-# Cactus? Not cactus?
+# Cactus? Not cactus?(platinum 3)
 
 ### 문제 설명
 
